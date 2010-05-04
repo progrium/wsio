@@ -1,0 +1,29 @@
+wsio -- web stream input/output tool
+
+Usage: wsio [options] [user[:pass]@][hostname][path]
+  -l  Listen to stream and print to STDOUT
+  -s  Use HTTPS
+  -k  Ignore SSL verification (like curl)
+  
+By default, wsio listens to STDIN and does an HTTP POST for each line.
+
+This tool is similar to netcat in that it's intended to be used with STDIN and
+STDOUT, making it perfect for command pipelining. However, instead of direct
+point to point TCP/UDP connections, it uses HTTP. Coupled with a server that
+provides realtime pubsub over HTTP and you have one of the most magical tools
+ever. Example:
+
+Log Aggregation
+===============
+
+Run this on one or several machines:
+
+  tail -f /var/log/something | wsio somehost/log
+
+Run this on your central aggregator:
+
+  wsio -l somehost/log > /var/log/aggregate
+
+Run this on your *laptop* behind a NAT to watch the logs:
+
+  wsio -l somehost/log
