@@ -13,10 +13,7 @@ This tool is similar to netcat in that it's intended to be used with STDIN and
 STDOUT, making it perfect for command pipelining. However, instead of direct
 point to point TCP/UDP connections, it uses HTTP. Coupled with a server that
 provides realtime pubsub over HTTP and you have one of the most magical tools
-ever. Example:
-
-Log Aggregation
-===============
+ever. Here's a toy log aggregation example:
 
 Run this on one or several machines:
 
@@ -29,3 +26,14 @@ Run this on your central aggregator:
 Run this on your *laptop behind a NAT* to watch the logs:
 
   wsio -l somehost/log
+
+
+Obviously there is a server-side component to this. It's not that complicated
+and there are some servers that already implement streams this way. 
+
+For example, Twitter's Stream API:
+
+  wsio -l <user>:<pass>@stream.twitter.com/1/statuses/sample.json
+
+However, wsio was made with a particular server-side component in mind. If you
+are interested in this, please email me. 

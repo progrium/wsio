@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require 'rubygems'
 require 'wsio'
+#require 'lib/wsio'
 
 help =<<EOF
 Usage: wsio [options] [user[:pass]@][hostname][path]

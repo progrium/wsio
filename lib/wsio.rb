@@ -17,9 +17,13 @@ def start(args)
   args = args.join.gsub('-', '')
   scheme = (args.include? 's') ? 'https' : 'http'
   url = "#{scheme}://#{host_and_path}"
+  client = HTTPClient.new
+  client.ssl_config.verify_mode = nil if args.include? 'k'
+  #client.set_auth(url, 'user', 'pass') if user  ## This doesn't work?
+  headers = {}
+  headers['Authorization'] = "Basic #{Base64.encode64([user,pass].join(':')).gsub("\n",'')}" if user # Fix set_auth
   if args.include? 'l'
-    c = HTTPClient.new
-    c.get_content(url) do |chunk|
+    client.get_content(url, nil, headers) do |chunk|
       obj = JSON.parse(chunk)
       if obj.is_a? Array
         puts obj.first
@@ -33,27 +37,21 @@ def start(args)
         obj = JSON.parse(line)
         if obj.is_a? Hash
           body = line
-          headers = {"Content-Type" => "application/json"}
+          headers["Content-Type"] = "application/json"
         elsif obj.is_a? Array
           body = obj.first.to_s
-          headers = {"Content-Type" => "text/plain"}
+          headers["Content-Type"] = "text/plain"
         else 
           body = obj.to_s
-          headers = {"Content-Type" => "text/plain"}
+          headers["Content-Type"] = "text/plain"
         end
       rescue JSON::ParserError
         body = line.strip
-        if body.split('&').collect{|m| /^[^&^=]+=[^&^=]+$/.match(m) }.all?
-          headers = {}
-        else
-          headers = {"Content-Type" => "text/plain"}
+        unless body.split('&').collect{|m| /^[^&^=]+=[^&^=]+$/.match(m) }.all?
+          headers["Content-Type"] = "text/plain"
         end
       end
-      c = HTTPClient.new
-      #c.set_auth(url, 'user', 'pass') if user  ## This doesn't work?
-      headers['Authorization'] = "Basic #{Base64.encode64([user,pass].join(':')).gsub("\n",'')}" if user # Fix set_auth
-      c.ssl_config.verify_mode = nil if args.include? 'k'
-      resp = c.post(url, body, headers)
+      resp = client.post(url, body, headers)
       if resp.status != 200
         puts resp.content
       end
