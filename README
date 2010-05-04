@@ -1,5 +1,7 @@
 wsio -- web stream input/output tool
 
+Install: gem install wsio
+
 Usage: wsio [options] [user[:pass]@][hostname][path]
   -l  Listen to stream and print to STDOUT
   -s  Use HTTPS

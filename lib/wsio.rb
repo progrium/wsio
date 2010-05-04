@@ -13,7 +13,7 @@ def start(args)
     #  pass = ask("Password for #{user}: ") {|q| q.echo = false}
     #end
   end
-  raise "No host specified" unless host_and_path
+  raise "No host specified" if host_and_path[0] == 45 or host_and_path.empty?
   args = args.join.gsub('-', '')
   scheme = (args.include? 's') ? 'https' : 'http'
   url = "#{scheme}://#{host_and_path}"

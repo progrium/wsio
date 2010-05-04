@@ -2,8 +2,22 @@
 require 'rubygems'
 require 'wsio'
 
+help =<<EOF
+Usage: wsio [options] [user[:pass]@][hostname][path]
+  -l  Listen to stream and print to STDOUT
+  -s  Use HTTPS
+  -k  Ignore SSL verification (like curl)
+  
+By default, wsio listens to STDIN and does an HTTP POST for each line.
+
+EOF
+
 begin
-  start(ARGV)
+  if ARGV.include?('--help') or ARGV.include?('-h') or ARGV.empty?
+    puts help
+  else
+    start(ARGV)
+  end
 rescue Exception => e
   puts e
   exit
