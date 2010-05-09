@@ -18,7 +18,7 @@ def start(args)
   scheme = (args.include? 's') ? 'https' : 'http'
   url = "#{scheme}://#{host_and_path}"
   client = HTTPClient.new
-  client.ssl_config.verify_mode = nil if args.include? 'k'
+  client.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE if args.include? 'k'
   #client.set_auth(url, 'user', 'pass') if user  ## This doesn't work?
   headers = {}
   headers['Authorization'] = "Basic #{Base64.encode64([user,pass].join(':')).gsub("\n",'')}" if user # Fix set_auth
@@ -47,7 +47,9 @@ def start(args)
         end
       rescue JSON::ParserError
         body = line.strip
-        unless body.split('&').collect{|m| /^[^&^=]+=[^&^=]+$/.match(m) }.all?
+        if body.split('&').collect{|m| /^[^&^=]+=[^&^=]+$/.match(m) }.all?
+          headers["Content-Type"] = "application/x-www-form-urlencoded"
+        else
           headers["Content-Type"] = "text/plain"
         end
       end

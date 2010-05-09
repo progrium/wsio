@@ -1,6 +1,8 @@
 wsio -- web stream input/output tool
 
-Install: gem install wsio
+Dependencies: Ruby (dev version to compile extensions) and Rubygems
+
+Install: sudo gem install wsio
 
 Usage: wsio [options] [user[:pass]@][hostname][path]
   -l  Listen to stream and print to STDOUT
@@ -23,7 +25,7 @@ Run this on your central aggregator:
 
   wsio -l somehost/log > /var/log/aggregate
 
-Run this on your *laptop behind a NAT* to watch the logs:
+Run this on your *laptop behind NAT* to watch the logs:
 
   wsio -l somehost/log
 
